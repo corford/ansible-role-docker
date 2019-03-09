@@ -1,5 +1,5 @@
 ---
-- name: Install packages to allow apt to use a repository over HTTPS
+- name: Docker | Install packages to allow apt to use a repository over HTTPS
   apt:
     name: "{{ docker_apt_repo_https_support_packages }}"
     state: present
@@ -8,20 +8,20 @@
     cache_valid_time: 3600
   tags: docker
 
-- name: Add official docker repository signing key
+- name: Docker | Add official repository signing key
   apt_key:
     url: "{{ docker_apt_repo_signing_key }}"
     id: "{{ docker_apt_repo_signing_key_id }}"
     state: present
   tags: docker
 
-- name: Add docker repository
+- name: Docker | Add repository
   apt_repository:
     repo: "{{ docker_apt_repo }}"
     state: present
   tags: docker
 
-- name: Install docker
+- name: Docker | Install
   apt:
     name:
       - docker-ce
@@ -30,4 +30,10 @@
     update-cache: yes
     state: present
   tags: docker
-  
+
+- name: Docker | Enable and start service
+  systemd:
+    name: "docker.service"
+    state: started
+    enabled: yes
+  tags: docker
